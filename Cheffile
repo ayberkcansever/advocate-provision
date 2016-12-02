@@ -11,8 +11,10 @@ cookbook 'git'
 cookbook 'chruby_install', '~> 0.1.1'
 cookbook 'ruby-install', '~> 0.2.0'
 
-cookbook 'puma', '>= 0.1.7'
-cookbook 'nginx', '~> 2.7.4'
+cookbook 'erlang', '~> 4.0.0'
+
+cookbook 'puma', '~> 0.1.7'
+cookbook 'nginx', '~> 2.7.6'
 
 # cookbook 'database', '~> 4.0.3'
 
