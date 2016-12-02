@@ -1,0 +1,51 @@
+{
+  "name": "advocate-server",
+  "json_class": "Chef::Role",
+  "chef_type": "role",
+  "override_attributes": {
+    "authorization": {
+      "sudo": {
+        "include_sudoers_d": true
+      }
+    },
+
+    "nginx": {
+      "user": "deploy",
+      "install_method": "package"
+    },
+
+    "ruby-install": {
+      "rubies": [{
+        "ruby": "ruby 2.3.1",
+        "gems": [
+          {"name": "bundler"}
+        ]
+      }]
+    },
+
+    "chruby_install": {
+      "default_ruby": "2.3.1",
+      "auto": false
+    },
+
+    "puma": {
+      "bundler_version": "1.10.6",
+      "rubygems_location": "/opt/rubies/ruby-2.3.1/bin/gem"
+    },
+
+    // postgresql config
+    "postgresql": {
+      "version": "9.4",
+      "config": {
+        "port": 5432
+      }
+    }
+
+  },
+  "default_attributes": { },
+  "description": "This is a complete server role.",
+
+  "run_list": [
+    "recipe[advocate-server]"
+  ]
+}

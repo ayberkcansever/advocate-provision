@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+#^syntax detection
+
+site 'https://supermarket.getchef.com/api/v1'
+
+cookbook 'sudo'
+cookbook 'ufw'
+# cookbook 'iptables-ng', '~> 2.2.5'
+cookbook 'git'
+
+cookbook 'chruby_install', '~> 0.1.1'
+cookbook 'ruby-install', '~> 0.2.0'
+
+cookbook 'puma', '>= 0.1.7'
+cookbook 'nginx', '~> 2.7.4'
+
+# cookbook 'database', '~> 4.0.3'
+
+cookbook 'systemd'
