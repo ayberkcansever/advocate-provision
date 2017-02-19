@@ -1,8 +1,0 @@
-{
-  "run_list": [
-    "role[advocate-server]"
-  ],
-  "automatic": {
-    "ipaddress": "advocate-server"
-  }
-}
