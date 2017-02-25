@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  db:
+    env_file: .env.production
+  proxy:
+    env_file: .env.production
+  advocate:
+    env_file: .env.production
+  advocate-bridge:
+    env_file: .env.production
