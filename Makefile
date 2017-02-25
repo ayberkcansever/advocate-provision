@@ -1,6 +1,9 @@
 pull:
 	docker-compose -f docker-compose.yml pull
 
+build:
+	docker-compose -f docker-compose.yml build
+
 run:
 	# docker-compose -f docker-compose.yml run --rm --name advocate --service-ports proxy # all dependencies are started
 	docker-compose -f docker-compose.yml up
