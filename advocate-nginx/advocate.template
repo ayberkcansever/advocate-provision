@@ -14,7 +14,7 @@ server {
   #ssl_certificate_key /etc/letsencrypt/live/advocate.org/privkey.pem;
   #ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
   
-  server_name $ADVOCATE_SERVERS;
+  server_name $ADVOCATE_SERVER;
 
   root /app/public;
 
@@ -58,7 +58,7 @@ server {
 server {
   listen 80; # temporary
 
-  server_name $ADVOCATE_BRIDGE_SERVERS;
+  server_name bridge.$ADVOCATE_SERVER;
 
   access_log  /app/log/advocate-bridge.access.log combined;
   error_log   /app/log/advocate-bridge.error.log;

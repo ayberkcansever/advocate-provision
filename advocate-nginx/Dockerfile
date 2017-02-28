@@ -7,4 +7,8 @@ RUN mkdir -p /etc/nginx/sites-enabled /app/log /app/public
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY advocate.template /etc/nginx/advocate.template
 
-CMD /bin/sh -c "envsubst '\$ADVOCATE_SERVERS \$ADVOCATE_BRIDGE_SERVERS' < /etc/nginx/advocate.template > /etc/nginx/sites-enabled/advocate && nginx"
+ARG ADVOCATE_SERVER=advocate.dev
+ENV ADVOCATE_SERVER=$ADVOCATE_SERVER
+RUN envsubst '\$ADVOCATE_SERVER' < /etc/nginx/advocate.template > /etc/nginx/sites-enabled/advocate
+
+CMD nginx

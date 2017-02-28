@@ -50,3 +50,24 @@ Locally, this will be available on port 8080.
 ### TODO ###
 
 1. use `--build-arg` with environment variables to create the nginx site config
+
+
+
+
+
+
+
+# multi-env options
+
+1. env_file loaded from ENV variable for DEPLOY_ENV=
+2. multiple compose files stacked together
+3. 
+
+1. Each dockerfile takes a build arg for build_env
+2a. compose can build, passing that build arg
+2b. compose only pulls from iamges with a env tag
+
+Small script to switch .env between .env.prod/production and .env.development
+Prepends the BUILD_ENV=$1
+Write out as .env in current directory
+Sources .env
