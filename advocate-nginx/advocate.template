@@ -1,0 +1,82 @@
+upstream advocate {
+  server advocate:80;
+}
+
+upstream advocate-bridge {
+  server advocate-bridge:80;
+}
+
+server {
+  listen 80; # temporary
+  #listen 443 ssl;
+
+  #ssl_certificate   /etc/letsencrypt/live/advocate.org/fullchain.pem;
+  #ssl_certificate_key /etc/letsencrypt/live/advocate.org/privkey.pem;
+  #ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  
+  server_name $ADVOCATE_SERVER;
+
+  root /app/public;
+
+  access_log  /app/log/advocate.access.log combined;
+  error_log   /app/log/advocate.error.log;
+  
+  location / {
+
+    if (-f $request_filename) {
+      break;
+    }
+
+    index index.html index.htm;
+
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    # proxy_set_header Host $http_host;
+    proxy_set_header Host $server_name;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_redirect off;
+
+    if (!-f $request_filename) {
+      proxy_pass http://advocate;
+      break;
+    }
+  }
+
+  location ~ "^/assets/.*-[0-9a-f]{32}.*" {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+    add_header ETag "";
+    break;
+  }
+
+  error_page  500 502 503 504 /500.html;
+  error_page  404 /404.html;
+
+  location ~ ^/(404|500).html {break;}
+}
+
+server {
+  listen 80; # temporary
+
+  server_name bridge.$ADVOCATE_SERVER;
+
+  access_log  /app/log/advocate-bridge.access.log combined;
+  error_log   /app/log/advocate-bridge.error.log;
+
+  location /socket {
+    proxy_pass http://advocate-bridge;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    break;
+  }
+
+  location / {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $server_name;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_redirect off;
+    proxy_pass http://advocate-bridge;
+    break;
+  }
+}
