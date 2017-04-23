@@ -51,12 +51,6 @@ Locally, this will be available on port 8080.
 
 1. use `--build-arg` with environment variables to create the nginx site config
 
-
-
-
-
-
-
 # multi-env options
 
 1. env_file loaded from ENV variable for DEPLOY_ENV=
@@ -71,3 +65,29 @@ Small script to switch .env between .env.prod/production and .env.development
 Prepends the BUILD_ENV=$1
 Write out as .env in current directory
 Sources .env
+
+# Setting up the swarm
+
+1. 
+
+# Production Deploy
+
+1. `curl -O https://raw.githubusercontent.com/tpitale/advocate_provision/master/docker-compose.yml`
+2. `curl https://raw.githubusercontent.com/tpitale/advocate_provision/master/.env.sample > .env`
+3. `vi .env` to set your variables
+4. `set -a; source .env; set +a`
+5. `docker login $DOCKER_REGISTRY`
+6. `docker stack deploy --with-registry-auth --compose-file=docker-compose.yml advocate` # each time you update
+7. `docker exec advocate_advocate.1.{CONTAINER_ID} bin/rake db:setup --trace`
+
+# Debugging
+
+## From manager node
+
+* `docker stack services advocate`
+* `docker stack ps advocate`
+
+## From application node in swarm
+
+* `docker exec advocate_advocate.1.{CONTAINER_ID} tail -f /app/log/puma.stderr.log`
+* `docker exec advocate_advocate.1.{CONTAINER_ID} tail -f /app/log/prod.log`
