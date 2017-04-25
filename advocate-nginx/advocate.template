@@ -20,7 +20,12 @@ server {
 
   access_log  /app/log/advocate.access.log combined;
   error_log   /app/log/advocate.error.log;
-  
+
+  # NO, PHP
+  location ~ \.php$ {
+    deny all;
+  }
+
   location / {
 
     if (-f $request_filename) {
