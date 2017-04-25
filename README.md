@@ -55,7 +55,7 @@ Locally, this will be available on port 8080.
 
 1. env_file loaded from ENV variable for DEPLOY_ENV=
 2. multiple compose files stacked together
-3. 
+3. ...
 
 1. Each dockerfile takes a build arg for build_env
 2a. compose can build, passing that build arg
@@ -66,11 +66,18 @@ Prepends the BUILD_ENV=$1
 Write out as .env in current directory
 Sources .env
 
-# Setting up the swarm
+# Setting up the swarm (assuming docker 17.04+ installed)
 
-1. 
+1. create 2 or 3 nodes (I used digitalocean.com), one manager, one application, and one database
+2. `ssh` to manager
+3. `docker swarm init --advertise-addr {VPS_PRIVATE_IP}`
+4. Copy the command to join the swarm
+5. `ssh` to application and database, and paste the `docker swarm join --token ...` command
+6. Back on the manager node, assign roles to each hostname e.g.:
+7. `docker node update --label-add role=database {DATABASE_SERVER_HOSTNAME}`
+8. `docker node update --label-add role=application {APPLICATION_SERVER_HOSTNAME`
 
-# Production Deploy
+# Production Deploy (on Manager node)
 
 1. `curl -O https://raw.githubusercontent.com/tpitale/advocate_provision/master/docker-compose.yml`
 2. `curl https://raw.githubusercontent.com/tpitale/advocate_provision/master/.env.sample > .env`
@@ -78,16 +85,20 @@ Sources .env
 4. `set -a; source .env; set +a`
 5. `docker login $DOCKER_REGISTRY`
 6. `docker stack deploy --with-registry-auth --compose-file=docker-compose.yml advocate` # each time you update
-7. `docker exec advocate_advocate.1.{CONTAINER_ID} bin/rake db:setup --trace`
+
+## Run db setup once, or migrations as needed from the Application node:
+
+1. `docker exec advocate_advocate.1.{CONTAINER_ID} bin/rake db:setup --trace`
+2. `docker exec advocate_advocate.1.{CONTAINER_ID} bin/rake db:migrate`
 
 # Debugging
 
-## From manager node
+## From Manager node
 
 * `docker stack services advocate`
 * `docker stack ps advocate`
 
-## From application node in swarm
+## From Application node in swarm
 
 * `docker exec advocate_advocate.1.{CONTAINER_ID} tail -f /app/log/puma.stderr.log`
 * `docker exec advocate_advocate.1.{CONTAINER_ID} tail -f /app/log/prod.log`
